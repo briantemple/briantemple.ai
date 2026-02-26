@@ -26,6 +26,18 @@
       "date": "2026-02-25",
       "question": "Hi",
       "answer": "Hi! 👋"
-    }
+    },
+    {
+      "id": "ai-jobs",
+      "date": "2026-02-25",
+      "question": "Is AI going to take my job?",
+      "answer": "You don't have to worry about me. Pinky promise."
+    },
+    {
+       "id": "taxes",
+       "date": "2026-02-25",
+       "question": "Can you help me with my taxes?",
+       "answer": "Absolutely not."
+     }
   ]
 }
