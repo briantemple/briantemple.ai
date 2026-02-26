@@ -6,22 +6,30 @@
   var textarea = document.getElementById('message-input');
   var statusEl = document.getElementById('input-status');
 
+  var inputArea = document.querySelector('.input-area');
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // --- Load and Render Posts ---
 
   function loadPosts() {
     fetch('posts.json')
       .then(function (res) { return res.json(); })
       .then(function (data) {
-        renderMessages(data.posts || []);
-        scrollToBottom();
+        var posts = data.posts || [];
+        if (prefersReducedMotion) {
+          renderMessagesImmediate(posts);
+        } else {
+          animateIntro(posts);
+        }
       })
       .catch(function () {
         chatMessages.innerHTML =
           '<p style="text-align:center;color:var(--text-secondary);padding:40px 0;">Could not load posts.</p>';
+        showInputArea();
       });
   }
 
-  function renderMessages(posts) {
+  function renderMessagesImmediate(posts) {
     var html = '';
     var lastDate = '';
 
@@ -37,6 +45,154 @@
     }
 
     chatMessages.innerHTML = html;
+    scrollToBottom();
+    showInputArea();
+  }
+
+  function showInputArea() {
+    inputArea.classList.add('visible');
+  }
+
+  function delay(ms) {
+    return new Promise(function (resolve) { setTimeout(resolve, ms); });
+  }
+
+  function appendElement(html, parent) {
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+    var el = wrapper.firstElementChild;
+    el.classList.add('fade-in');
+    parent.appendChild(el);
+    // Force layout so the transition triggers
+    el.offsetHeight; // eslint-disable-line no-unused-expressions
+    el.classList.add('visible');
+    return el;
+  }
+
+  function animateIntro(posts) {
+    var lastDate = '';
+    var chain = Promise.resolve();
+    var introCount = 0;
+    while (introCount < posts.length && posts[introCount].intro) introCount++;
+    var animated = posts.slice(0, introCount);
+    var remaining = posts.slice(introCount);
+
+    for (var i = 0; i < animated.length; i++) {
+      (function (post) {
+        chain = chain.then(function () {
+          // Track date but skip separator during intro
+          lastDate = post.date;
+
+          // Message pair container
+          var pairEl = appendElement(
+            '<div class="message-pair"></div>',
+            chatMessages
+          );
+
+          // Question bubble
+          appendElement(
+            '<div class="message-user">' +
+              '<div class="message-bubble">' + renderMarkdown(post.question) + '</div>' +
+            '</div>',
+            pairEl
+          );
+          scrollToBottom();
+
+          return delay(400);
+        }).then(function () {
+          // Find the pair we just created (last .message-pair)
+          var pairs = chatMessages.querySelectorAll('.message-pair');
+          var pairEl = pairs[pairs.length - 1];
+
+          // Answer container with pre-rendered markdown
+          var answerEl = document.createElement('div');
+          answerEl.className = 'message-assistant fade-in';
+          answerEl.innerHTML = '<div class="message-body">' + renderMarkdown(post.answer) + '</div>';
+          pairEl.appendChild(answerEl);
+          answerEl.offsetHeight;
+          answerEl.classList.add('visible');
+          scrollToBottom();
+
+          var bodyEl = answerEl.querySelector('.message-body');
+
+          // Collect all text nodes, store their full text, then empty them
+          var textNodes = [];
+          var fullTexts = [];
+          (function walk(node) {
+            if (node.nodeType === 3) {
+              textNodes.push(node);
+              fullTexts.push(node.nodeValue);
+              node.nodeValue = '';
+            } else {
+              for (var c = node.firstChild; c; c = c.nextSibling) walk(c);
+            }
+          })(bodyEl);
+
+          // Append cursor after last text node
+          var cursor = document.createElement('span');
+          cursor.className = 'streaming-cursor';
+          bodyEl.appendChild(cursor);
+
+          // Reveal one character at a time across text nodes
+          var nodeIdx = 0;
+          var charIdx = 0;
+          return new Promise(function (resolve) {
+            function tick() {
+              if (nodeIdx < textNodes.length) {
+                charIdx++;
+                textNodes[nodeIdx].nodeValue = fullTexts[nodeIdx].slice(0, charIdx);
+                // Move cursor next to the active text node
+                textNodes[nodeIdx].parentNode.appendChild(cursor);
+                if (charIdx >= fullTexts[nodeIdx].length) {
+                  nodeIdx++;
+                  charIdx = 0;
+                }
+                scrollToBottom();
+                setTimeout(tick, 30);
+              } else {
+                cursor.remove();
+                scrollToBottom();
+                resolve();
+              }
+            }
+            tick();
+          });
+        }).then(function () {
+          return delay(300);
+        });
+      })(animated[i]);
+    }
+
+    // After animated posts, fade in the rest + input area, then smooth-scroll
+    chain.then(function () {
+      var html = '';
+      for (var j = 0; j < remaining.length; j++) {
+        var post = remaining[j];
+
+        if (post.date !== lastDate) {
+          html += dateSeparator(post.date);
+          lastDate = post.date;
+        }
+
+        html += messagePair(post);
+      }
+
+      if (html) {
+        var batch = document.createElement('div');
+        batch.innerHTML = html;
+        batch.classList.add('fade-in');
+        chatMessages.appendChild(batch);
+        batch.offsetHeight;
+        batch.classList.add('visible');
+      }
+
+      showInputArea();
+
+      // Smooth-scroll to bottom after fade completes
+      setTimeout(function () {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 350);
+    });
   }
 
   function dateSeparator(dateStr) {

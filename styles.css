@@ -253,6 +253,14 @@ body {
   border-top: 1px solid var(--border);
   padding: 12px 24px;
   padding-bottom: max(12px, env(safe-area-inset-bottom));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.input-area.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .input-form {
@@ -325,6 +333,28 @@ body {
   min-height: 17px;
 }
 
+/* --- Intro Animation --- */
+
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+}
+
+.streaming-cursor::after {
+  content: '▍';
+  animation: cursor-blink 0.6s steps(2) infinite;
+  color: var(--secondary);
+}
+
+@keyframes cursor-blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 /* --- Responsive --- */
 
 @media (max-width: 600px) {
@@ -352,5 +382,13 @@ body {
   .thinking-dots::after {
     animation: none;
     content: '...';
+  }
+
+  .fade-in {
+    transition: none;
+  }
+
+  .streaming-cursor::after {
+    animation: none;
   }
 }

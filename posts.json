@@ -4,19 +4,28 @@
       "id": "hello",
       "date": "2026-02-24",
       "question": "Hello?",
-      "answer": "Hi there! 👋\n\nHow can I help you today?"
+      "answer": "Hi there! 👋\n\nHow can I help you today?",
+      "intro": true
     },
     {
       "id": "is-this-real",
       "date": "2026-02-24",
       "question": "Wait, this is real?",
-      "answer": "**You're absolutely right!** briantemple.ai is a 86 billion neuron model available to answer any of your questions. What's on your mind?"
+      "answer": "**You're absolutely right!** briantemple.ai is a 86 billion neuron model available to answer any of your questions. What's on your mind?",
+      "intro": true
     },
     {
-      "id": "who-are-you",
+      "id": "about",
       "date": "2026-02-24",
       "question": "Who are you?",
-      "answer": "Hi, [I'm Brian](https://www.briantemple.com). It's nice to meet you."
+      "answer": "Hi, [I'm Brian](https://www.briantemple.com). It's nice to meet you.",
+      "intro": true
+    },
+    {
+      "id": "hi",
+      "date": "2026-02-25",
+      "question": "Hi",
+      "answer": "Hi! 👋"
     }
   ]
 }
