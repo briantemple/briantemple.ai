@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>briantemple.ai</title>
+  <meta name="description" content="briantemple.ai — Brian Temple's blog, disguised as a chatbot.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="briantemple.ai">
+  <meta property="og:description" content="A blog disguised as a chatbot. Ask me anything.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://briantemple.ai">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="briantemple.ai">
+  <meta name="twitter:description" content="A blog disguised as a chatbot. Ask me anything.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <!-- Social Image -->
+  <meta property="og:image" content="https://briantemple.ai/logo.png">
+  <meta name="twitter:image" content="https://briantemple.ai/logo.png">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header" role="banner">
+    <div class="header-content">
+      <img src="favicon.png" alt="" class="header-logo" width="28" height="28">
+      <h1 class="header-title">briantemple.ai</h1>
+    </div>
+  </header>
+
+  <main id="chat" class="chat" role="log" aria-label="Blog posts">
+    <div class="chat-messages" id="chat-messages">
+      <!-- Messages injected by JS -->
+    </div>
+  </main>
+
+  <footer class="input-area" role="contentinfo">
+    <form id="question-form" class="input-form" action="https://formspree.io/f/xkovkpjp" method="POST">
+      <!-- Honeypot for spam prevention -->
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
+      <div class="input-row">
+        <label for="message-input" class="visually-hidden">Ask anything</label>
+        <textarea
+          id="message-input"
+          name="message"
+          class="message-input"
+          placeholder="Ask anything..."
+          rows="1"
+          required
+          aria-label="Ask anything"
+        ></textarea>
+        <button type="submit" class="send-button" aria-label="Send question">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 13V8.5L8 8L3 7.5V3L14 8L3 13Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+
+      <p id="input-status" class="input-status"></p>
+    </form>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
