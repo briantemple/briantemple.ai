@@ -57,6 +57,47 @@
     return new Promise(function (resolve) { setTimeout(resolve, ms); });
   }
 
+  function streamText(bodyEl) {
+    var textNodes = [];
+    var fullTexts = [];
+    (function walk(node) {
+      if (node.nodeType === 3) {
+        textNodes.push(node);
+        fullTexts.push(node.nodeValue);
+        node.nodeValue = '';
+      } else {
+        for (var c = node.firstChild; c; c = c.nextSibling) walk(c);
+      }
+    })(bodyEl);
+
+    var cursor = document.createElement('span');
+    cursor.className = 'streaming-cursor';
+    bodyEl.appendChild(cursor);
+
+    var nodeIdx = 0;
+    var charIdx = 0;
+    return new Promise(function (resolve) {
+      function tick() {
+        if (nodeIdx < textNodes.length) {
+          charIdx++;
+          textNodes[nodeIdx].nodeValue = fullTexts[nodeIdx].slice(0, charIdx);
+          textNodes[nodeIdx].parentNode.appendChild(cursor);
+          if (charIdx >= fullTexts[nodeIdx].length) {
+            nodeIdx++;
+            charIdx = 0;
+          }
+          scrollToBottom();
+          setTimeout(tick, 30);
+        } else {
+          cursor.remove();
+          scrollToBottom();
+          resolve();
+        }
+      }
+      tick();
+    });
+  }
+
   function appendElement(html, parent) {
     var wrapper = document.createElement('div');
     wrapper.innerHTML = html;
@@ -113,50 +154,7 @@
           answerEl.classList.add('visible');
           scrollToBottom();
 
-          var bodyEl = answerEl.querySelector('.message-body');
-
-          // Collect all text nodes, store their full text, then empty them
-          var textNodes = [];
-          var fullTexts = [];
-          (function walk(node) {
-            if (node.nodeType === 3) {
-              textNodes.push(node);
-              fullTexts.push(node.nodeValue);
-              node.nodeValue = '';
-            } else {
-              for (var c = node.firstChild; c; c = c.nextSibling) walk(c);
-            }
-          })(bodyEl);
-
-          // Append cursor after last text node
-          var cursor = document.createElement('span');
-          cursor.className = 'streaming-cursor';
-          bodyEl.appendChild(cursor);
-
-          // Reveal one character at a time across text nodes
-          var nodeIdx = 0;
-          var charIdx = 0;
-          return new Promise(function (resolve) {
-            function tick() {
-              if (nodeIdx < textNodes.length) {
-                charIdx++;
-                textNodes[nodeIdx].nodeValue = fullTexts[nodeIdx].slice(0, charIdx);
-                // Move cursor next to the active text node
-                textNodes[nodeIdx].parentNode.appendChild(cursor);
-                if (charIdx >= fullTexts[nodeIdx].length) {
-                  nodeIdx++;
-                  charIdx = 0;
-                }
-                scrollToBottom();
-                setTimeout(tick, 30);
-              } else {
-                cursor.remove();
-                scrollToBottom();
-                resolve();
-              }
-            }
-            tick();
-          });
+          return streamText(answerEl.querySelector('.message-body'));
         }).then(function () {
           return delay(300);
         });
@@ -356,27 +354,45 @@
 
     var formData = new FormData(form);
 
-    // Clear input immediately
+    // Clear input and hide the input area
     textarea.value = '';
     autoResize();
     statusEl.textContent = '';
+    inputArea.classList.remove('visible');
 
-    // Submit to Formspree
+    // Show question bubble
+    var pairEl = appendElement(
+      '<div class="message-pair"></div>',
+      chatMessages
+    );
+    appendElement(
+      '<div class="message-user">' +
+        '<div class="message-bubble">' + escapeHtml(question) + '</div>' +
+      '</div>',
+      pairEl
+    );
+    scrollToBottom();
+
+    // After a pause, stream the reply
+    var replyText = 'Thanks for the question! Check back later for a response.';
+    delay(400).then(function () {
+      var answerEl = document.createElement('div');
+      answerEl.className = 'message-assistant fade-in';
+      answerEl.innerHTML = '<div class="message-body">' + renderMarkdown(replyText) + '</div>';
+      pairEl.appendChild(answerEl);
+      answerEl.offsetHeight;
+      answerEl.classList.add('visible');
+      scrollToBottom();
+
+      return streamText(answerEl.querySelector('.message-body'));
+    });
+
+    // Submit to Formspree in the background
     fetch(form.action, {
       method: 'POST',
       body: formData,
       headers: { 'Accept': 'application/json' }
-    })
-      .then(function (res) {
-        if (res.ok) {
-          statusEl.textContent = 'Submitted. Check back later for a response.';
-        } else {
-          statusEl.textContent = 'Something went wrong. Try again.';
-        }
-      })
-      .catch(function () {
-        statusEl.textContent = 'Something went wrong. Try again.';
-      });
+    });
   });
 
   // --- Init ---

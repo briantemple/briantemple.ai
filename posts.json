@@ -38,6 +38,30 @@
        "date": "2026-02-25",
        "question": "Can you help me with my taxes?",
        "answer": "Absolutely not."
-     }
+     },
+     {
+       "id": "lucky",
+       "date": "2026-02-26",
+       "question": "Lucky numbers?",
+       "answer": "4, 8, 15, 16, 23, 42"
+     },
+     {
+       "id": "wassup",
+       "date": "2026-02-26",
+       "question": "Yo duuuude wasssssupp",
+       "answer": "Dude! :)"
+     },
+     {
+        "id": "brian",
+        "date": "2026-02-26",
+        "question": "Are you Brian Temple?",
+        "answer": "On good days."
+      },
+      {
+         "id": "beans",
+         "date": "2026-02-26",
+         "question": "Can I have beans with every meal?",
+         "answer": "I believe in you."
+      }
   ]
 }
