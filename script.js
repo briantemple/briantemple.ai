@@ -374,7 +374,7 @@
     scrollToBottom();
 
     // After a pause, stream the reply
-    var replyText = 'Thanks for the question! Check back later for a response.';
+    var replyText = "Brian will read this and post a real answer. Check back soon!";
     delay(400).then(function () {
       var answerEl = document.createElement('div');
       answerEl.className = 'message-assistant fade-in';

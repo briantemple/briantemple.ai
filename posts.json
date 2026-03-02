@@ -11,7 +11,7 @@
       "id": "is-this-real",
       "date": "2026-02-24",
       "question": "Wait, this is real?",
-      "answer": "**You're absolutely right!** briantemple.ai is a 86 billion neuron model available to answer any of your questions. What's on your mind?",
+      "answer": "**You're absolutely right!** briantemple.ai is a 86 billion neuron *artificial* artificial intelligence model available to answer any of your questions. What's on your mind?",
       "intro": true
     },
     {
@@ -65,9 +65,9 @@
       },
       {
          "id": "respond",
-         "date": "2026-02-27",
-         "question": "Will you ever respond to my questions??",
-         "answer": "Loading..."
+         "date": "2026-03-02",
+         "question": "Does it work?",
+         "answer": "Sure do! Happily employed."
       }
   ]
 }
