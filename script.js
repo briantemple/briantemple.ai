@@ -193,9 +193,8 @@
     });
   }
 
-  function dateSeparator(dateStr) {
-    var formatted = formatDate(dateStr);
-    return '<div class="date-separator"><span>' + escapeHtml(formatted) + '</span></div>';
+  function dateSeparator() {
+    return '<div class="date-separator"></div>';
   }
 
   function messagePair(post) {

@@ -117,16 +117,8 @@ body {
 /* --- Date Separator --- */
 
 .date-separator {
-  text-align: center;
-  padding: 24px 0 20px;
-}
-
-.date-separator span {
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--secondary);
+  border-top: 1px solid var(--border);
+  margin: 24px 0 20px;
 }
 
 /* --- Message Pair --- */
