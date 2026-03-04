@@ -68,6 +68,12 @@
          "date": "2026-03-02",
          "question": "Does it work?",
          "answer": "Sure do! Happily employed."
+      },
+      {
+         "id": "recommend",
+         "date": "2026-03-03",
+         "question": "Any book recommendations?",
+         "answer": "**Practical Object-Oriented Design** by Sandi Metz. It's technically a Ruby book, but don't let that dissuade you -- it's really about how to think. She builds one example across the entire book, layering in design principles as she goes, so by the end you understand the why behind everything, not just the how. I've read a lot of programming books, but this one changed how I approach code.\n\nFor non-programming: **Letters to a Young Poet** by Rainer Maria Rilke. Ten short letters from a famous poet to a kid who doesn't know what to do with his life. I can't say it will answer that question, but it discusses how not knowing is ok. It's amazingly inspiring and I re-read it on a regular basis."
       }
   ]
 }
